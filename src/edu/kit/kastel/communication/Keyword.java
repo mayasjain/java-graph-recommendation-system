@@ -10,6 +10,7 @@ package edu.kit.kastel.communication;
  * @author Programmieren-Team
  */
 public enum Keyword {
+
     LOAD_DATABASE("load database"),
 
     ADD("add"),

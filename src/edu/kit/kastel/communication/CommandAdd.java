@@ -3,15 +3,12 @@
  */
 
 package edu.kit.kastel.communication;
-
 import edu.kit.kastel.model.*;
-
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Represents the {@code quit} command to terminate the application as specified.
+ * Represents the {@code add} command to add node to graph.
  * 
  * @author Programmieren-Team
  */
@@ -31,56 +28,150 @@ public class CommandAdd extends Command {
         this.graph = graph;
     }
 
+
     @Override
     public boolean execute(String command, String[] arguments) {
 
-        System.out.println("IN ADD COMMAND");
-        System.out.println(command);
-        System.out.println(Arrays.toString(arguments));
+        //print error statement maybe
+        if (arguments.length != EXPECTED_ARGUMENTS) {
+            return false;
+        }
+
+        String subject = arguments[0].trim();
+        String predicate = arguments[1].trim();
+        String object = arguments[2].trim();
 
 
+        RelationType relationType = getRelationType(predicate);
+        if (relationType == null) {
+            return false;
+        }
 
-        String subject = arguments[0];
-        String predicate = arguments[1];
-        String object = arguments[2];
 
-        Node sourceNode = createNode(subject);
-        Node targetNode = createNode(object);
+        Node sourceNode = createOrGetNode(subject);
+        Node targetNode = createOrGetNode(object);
 
-        RelationType relationType = RelationType.valueOf(predicate.toUpperCase().replace("-", "_"));
+
+        if (sourceNode == null || targetNode == null) {
+            return false;
+        }
+
+
+        if (!isValidRelationship(sourceNode, targetNode, relationType)) {
+            return false;
+        }
+
+        if (sourceNode.equals(targetNode)) {
+            return false;
+        }
+
 
         Edge edge = new Edge(sourceNode, targetNode, relationType);
-
-        //TODO: check whether edge is allowed based on relationship type
-        System.out.println(edge);
         this.graph.addEdge(edge);
         return true;
     }
 
-    private Node createNode(String arg) {
-        // Create a matcher with our input
-        Matcher productMatcher = PRODUCT_PATTERN.matcher(arg);
-        Matcher categoryMatcher = CATEGORY_PATTERN.matcher(arg);
 
-        // Check if the pattern matches
+
+    private RelationType getRelationType(String predicate) {
+        String enumName = predicate.toUpperCase().replace("-", "_");
+        for (RelationType type : RelationType.values()) {
+            if (type.name().equals(enumName)) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    private Node createOrGetNode(String nodeString) {
+        // Check if this is a product
+        Matcher productMatcher = PRODUCT_PATTERN.matcher(nodeString);
+        Matcher catagoryMatcher = CATEGORY_PATTERN.matcher(nodeString);
+
+
         if (productMatcher.matches()) {
-            // Extract the captured groups
             String name = productMatcher.group(1);
-            String idString = productMatcher.group(2);
-            int id = Integer.parseInt(idString);
+            int id;
 
-            System.out.println("Name: " + name);
-            System.out.println("ID: " + id);
+            // Parse the ID safely
+            try {
+                id = Integer.parseInt(productMatcher.group(2));
+            } catch (NumberFormatException e) {
+                return null;
+            }
 
-            Product product = new Product(name, id);
-            return product;
+            // Check if this product already exists
+            Product existingProduct = graph.getProductByNameAndId(name, id);
+            if (existingProduct != null) {
+                return existingProduct;
+            }
+
+            if (isValidProductParameters(name, id)) {
+                return new Product(name, id);
+            }
+            return null;
         }
 
-        if (categoryMatcher.matches()) {
-            Category category = new Category(arg);
-            return category;
+        if (catagoryMatcher.matches()) {
+            Node existingCategory = graph.getNodeByName(nodeString);
+            if (existingCategory != null && !existingCategory.isProduct()) {
+                return existingCategory;
+            }
+
+            if (isValidCategoryName(nodeString)) {
+                return new Category(nodeString);
+            }
         }
 
         return null;
     }
+
+
+    private boolean isValidProductParameters(String name, int id) {
+        return name != null && name.matches("[a-zA-Z0-9]+") && id >= 0;
+    }
+
+    private boolean isValidCategoryName(String name) {
+        return name != null && name.matches("[a-zA-Z0-9]+");
+    }
+
+    private boolean isValidRelationship(Node source, Node target, RelationType relationType) {
+        // Check relationship rules according to specification
+        boolean sourceIsProduct = source.isProduct();
+        boolean targetIsProduct = target.isProduct();
+
+        switch (relationType) {
+            case CONTAINS:
+                // "contains" - source must be a category, target can be product or category
+                return !sourceIsProduct;
+
+            case CONTAINED_IN:
+                // "contained-in" - target must be a category, source can be product or category
+                return !targetIsProduct;
+
+            case PART_OF:
+                // "part-of" - both source and target must be products
+                return sourceIsProduct && targetIsProduct;
+
+            case HAS_PART:
+                // "has-part" - both source and target must be products
+                return sourceIsProduct && targetIsProduct;
+
+            case SUCCESSOR_OF:
+                // "successor-of" - both source and target must be products
+                return sourceIsProduct && targetIsProduct;
+
+            case PREDECESSOR_OF:
+                // "predecessor-of" - both source and target must be products
+                return sourceIsProduct && targetIsProduct;
+
+            default:
+                return false;
+        }
+    }
 }
+
+
+
+
+

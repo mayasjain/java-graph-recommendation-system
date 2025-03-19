@@ -1,6 +1,8 @@
 package edu.kit.kastel.model;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Graph {
     private final Set<Node> nodes;
@@ -24,10 +26,10 @@ public class Graph {
 
     public boolean hasEdge(Edge edge) {
         final String relationString = edge.getRelation().toString().trim();
-        return edges.stream().anyMatch(curEdge ->
-                curEdge.getSource().equals(edge.getSource())
-                && curEdge.getTarget().equals(edge.getTarget())
-                && curEdge.getRelation().toString().equalsIgnoreCase(relationString));
+        return edges.stream().anyMatch(currentEdge ->
+                currentEdge.getSource().equals(edge.getSource())
+                && currentEdge.getTarget().equals(edge.getTarget())
+                && currentEdge.getRelation().toString().equalsIgnoreCase(relationString));
     }
 
     public void addEdge(Edge edge) {
@@ -49,11 +51,13 @@ public class Graph {
     }
 
     public void removeEdge(Edge edge) {
-        this.removeSingleEdge(edge.getSource(), edge.getTarget(), edge.getRelation());
+        this.removeSingleEdge(edge);
 
         RelationType inverseRelation = edge.getRelation().getInverse();
 
-        this.removeSingleEdge(edge.getTarget(), edge.getSource(), inverseRelation);
+        Edge inverseEdge = new Edge(edge.getTarget(), edge.getSource(), inverseRelation);
+        this.removeSingleEdge(inverseEdge);
+
 
         removeNodeWithNoEdges(edge.getSource());
         removeNodeWithNoEdges(edge.getTarget());
@@ -61,24 +65,7 @@ public class Graph {
 
     }
 
-    private void removeSingleEdge(Node source, Node target, RelationType relation) {
-        final String relationString = relation.toString();
 
-        edges.removeIf(edge -> edge.getSource().equals(source)
-                && edge.getTarget().equals(target)
-                && edge.getRelation().toString().equalsIgnoreCase(relationString));
-    }
-
-
-    private boolean hasAnyEdges(Node node) {
-        return edges.stream().anyMatch(edge -> edge.getSource().equals(node) || edge.getTarget().equals(node));
-    }
-
-    public void removeNodeWithNoEdges(Node node) {
-        if (!this.hasAnyEdges(node)) {
-            nodes.remove(node);
-        }
-    }
 
     //new method
     public Node getNodeByName(String name) {
@@ -110,7 +97,6 @@ public class Graph {
         return null;
     }
 
-    //new method
     public List<Node> getNeighbors(Node node, RelationType relation) {
         if (node == null || relation == null) {
             return new ArrayList<>();
@@ -145,12 +131,21 @@ public class Graph {
         return categories;
     }
 
-    public void sortNodes() {
+    private void removeSingleEdge(Edge edge) {
+        final String relationString = edge.getRelation().toString();
 
+        edges.removeIf(e -> e.getSource().equals(edge.getSource())
+                && e.getTarget().equals(edge.getTarget())
+                && e.getRelation().toString().equalsIgnoreCase(relationString));
     }
 
-    public void sortEdges() {
-
+    private boolean hasAnyEdges(Node node) {
+        return edges.stream().anyMatch(edge -> edge.getSource().equals(node) || edge.getTarget().equals(node));
     }
 
+    public void removeNodeWithNoEdges(Node node) {
+        if (!this.hasAnyEdges(node)) {
+            nodes.remove(node);
+        }
+    }
 }

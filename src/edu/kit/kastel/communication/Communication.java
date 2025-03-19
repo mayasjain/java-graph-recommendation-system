@@ -16,7 +16,6 @@ public class Communication {
 
     private static final String COMMAND_SEPARATOR = " ";
     private static final String MESSAGE_ERROR = "ERROR";
-
     private final Map<Keyword, Command> commands = new EnumMap<>(Keyword.class);
     private boolean isRunning = false;
 
@@ -30,6 +29,9 @@ public class Communication {
         this.commands.put(Keyword.ADD, new CommandAdd(graph));
 
         this.commands.put(Keyword.QUIT, new CommandQuit(this));
+
+//        this.commands.put(Keyword.LOAD_DATABASE, new CommandLoad());
+
     }
 
     /**
