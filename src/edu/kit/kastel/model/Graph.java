@@ -131,6 +131,24 @@ public class Graph {
         return neighbors;
     }
 
+    public List<Category> getAllCategories() {
+        List<Category> categories = new ArrayList<>();
+        for (Node node : nodes) {
+            if (!node.isProduct()) {
+                categories.add((Category) node);
+            }
+        }
+        categories.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
+        return categories;
+    }
+
+    public String getNodeNameWithoutId(Node node) {
+        if (node.isProduct()) {
+            return node.getName();
+        }
+        return node.getName();
+    }
+
     private List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
         for (Node node : nodes) {
@@ -142,16 +160,7 @@ public class Graph {
         return products;
     }
 
-    private List<Category> getAllCategories() {
-        List<Category> categories = new ArrayList<>();
-        for (Node node : nodes) {
-            if (!node.isProduct()) {
-                categories.add((Category) node);
-            }
-        }
-        categories.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
-        return categories;
-    }
+
 
     private void removeSingleEdge(Edge edge) {
         final String relationString = edge.getRelation().toString();
@@ -184,4 +193,5 @@ public class Graph {
             nodes.remove(node);
         }
     }
+
 }

@@ -38,6 +38,8 @@ public class Communication {
 
         this.commands.put(Keyword.REMOVE, new CommandRemove(graph));
 
+        this.commands.put(Keyword.EXPORT, new CommandExport(graph));
+
     }
 
     /**
