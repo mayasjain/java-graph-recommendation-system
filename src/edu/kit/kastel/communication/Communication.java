@@ -32,7 +32,7 @@ public class Communication {
 
         this.commands.put(Keyword.LOAD_DATABASE, new CommandLoadDatabase(graph));
 
-        this.commands.put(Keyword.NODES, new CommandLoadDatabase(graph));
+        this.commands.put(Keyword.NODES, new CommandNodes(graph));
 
 
     }

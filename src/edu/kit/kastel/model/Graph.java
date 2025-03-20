@@ -114,19 +114,23 @@ public class Graph {
     }
 
     private List<Product> getAllProducts() {
-        List<Product> products = nodes.stream()
-                .filter(node -> node.isProduct())
-                .map(node -> (Product) node)
-                .toList();
+        List<Product> products = new ArrayList<>();
+        for (Node node : nodes) {
+            if (node.isProduct()) {
+                products.add((Product) node);
+            }
+        }
         products.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
         return products;
     }
 
     private List<Category> getAllCategories() {
-        List<Category> categories = nodes.stream()
-                .filter(node -> !node.isProduct())
-                .map(node -> (Category) node)
-                .toList();
+        List<Category> categories = new ArrayList<>();
+        for (Node node : nodes) {
+            if (!node.isProduct()) {
+                categories.add((Category) node);
+            }
+        }
         categories.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
         return categories;
     }
