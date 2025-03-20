@@ -1,4 +1,5 @@
 package edu.kit.kastel.model;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +14,7 @@ public class Graph {
         this.edges = new ArrayList<>();
     }
 
+
     public List<Node> getSortedNodes() {
         List<Node> sortedNodes = new ArrayList<>(getAllProducts());
         sortedNodes.addAll(getAllCategories());
@@ -20,16 +22,35 @@ public class Graph {
         return sortedNodes;
     }
 
-    public List<Edge> getEdges() {
-        return new ArrayList<>(edges);
+    public List<Edge> getSortedEdges() {
+        List<Edge> sortedEdges = new ArrayList<>(edges);
+
+        sortedEdges.sort((e1, e2) -> {
+            // First, compare source node names
+            int sourceNameComparison = compareNodeNames(e1.getSource(), e2.getSource());
+            if (sourceNameComparison != 0) {
+                return sourceNameComparison;
+            }
+
+            // If source names are the same, compare target node names
+            int targetNameComparison = compareNodeNames(e1.getTarget(), e2.getTarget());
+            if (targetNameComparison != 0) {
+                return targetNameComparison;
+            }
+
+            // If target names are the same, compare predicate
+            return e1.getRelation().toString().compareTo(e2.getRelation().toString());
+        });
+
+        return sortedEdges;
     }
 
     public boolean hasEdge(Edge edge) {
         final String relationString = edge.getRelation().toString().trim();
         return edges.stream().anyMatch(currentEdge ->
                 currentEdge.getSource().equals(edge.getSource())
-                && currentEdge.getTarget().equals(edge.getTarget())
-                && currentEdge.getRelation().toString().equalsIgnoreCase(relationString));
+                        && currentEdge.getTarget().equals(edge.getTarget())
+                        && currentEdge.getRelation().toString().equalsIgnoreCase(relationString));
     }
 
     public void addEdge(Edge edge) {
@@ -65,9 +86,6 @@ public class Graph {
 
     }
 
-
-
-    //new method
     public Node getNodeByName(String name) {
         if (name == null) {
             return null;
@@ -147,7 +165,21 @@ public class Graph {
         return edges.stream().anyMatch(edge -> edge.getSource().equals(node) || edge.getTarget().equals(node));
     }
 
-    public void removeNodeWithNoEdges(Node node) {
+
+    private int compareNodeNames(Node node1, Node node2) {
+        String name1 = getNodeSortName(node1);
+        String name2 = getNodeSortName(node2);
+        return name1.compareToIgnoreCase(name2);
+    }
+
+    private String getNodeSortName(Node node) {
+        if (node.isProduct()) {
+            return ((Product) node).toString();
+        }
+        return node.getName();
+    }
+
+    private void removeNodeWithNoEdges(Node node) {
         if (!this.hasAnyEdges(node)) {
             nodes.remove(node);
         }

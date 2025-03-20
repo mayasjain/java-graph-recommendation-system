@@ -34,6 +34,7 @@ public class Communication {
 
         this.commands.put(Keyword.NODES, new CommandNodes(graph));
 
+        this.commands.put(Keyword.EDGES, new CommandEdges(graph));
 
     }
 
