@@ -26,6 +26,7 @@ public abstract class Command {
      * Creates a new command which doesn't expect arguments.
      */
     protected Command() {
+
         this.expectedArguments = 0;
     }
 

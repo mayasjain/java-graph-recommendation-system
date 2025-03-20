@@ -11,7 +11,8 @@ package edu.kit.kastel.communication;
  */
 public enum Keyword {
 
-    LOAD_DATABASE("load database"),
+    //not sure if this is a good idea
+    LOAD_DATABASE("load"),
 
     ADD("add"),
 

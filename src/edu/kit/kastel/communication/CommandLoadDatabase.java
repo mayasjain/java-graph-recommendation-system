@@ -1,13 +1,27 @@
 package edu.kit.kastel.communication;
-import edu.kit.kastel.model.Graph;
 
+import edu.kit.kastel.model.*;
+import java.io.IOException;
+import java.util.List;
+
+/**
+ * Represents the {@code load database} command to load a database file.
+ */
 public class CommandLoadDatabase extends Command {
     private static final int EXPECTED_ARGUMENTS = 1;
-    private final Graph graph;
 
+    private final Graph graph;
+    private final DatabaseParser parser;
+
+    /**
+     * Creates a new instance.
+     *
+     * @param graph the graph to load data into
+     */
     public CommandLoadDatabase(Graph graph) {
         super(EXPECTED_ARGUMENTS);
         this.graph = graph;
+        this.parser = new DatabaseParser(graph);
     }
 
     @Override
@@ -17,22 +31,15 @@ public class CommandLoadDatabase extends Command {
         }
 
         String filePath = arguments[0].trim();
-        return loadDatabase(filePath);
-    }
 
-    private boolean loadDatabase(String filePath) {
-        // 1. Read the file
-        // 2. For each line, parse and add to graph
-        // 3. Return success/failure
-        return false;
-    }
-
-    private boolean processLine(String line) {
-        // Parse the line according to grammar
-        // Extract subject, predicate, object
-        // Create/get nodes
-        // Validate relationship
-        // Add edge to graph
-        return false;
+        try {
+            List<String> lines = parser.parseFile(filePath);
+            for (String line : lines) {
+                System.out.println(line);
+            }
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 }

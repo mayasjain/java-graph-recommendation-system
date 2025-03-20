@@ -30,12 +30,15 @@ public class Communication {
 
         this.commands.put(Keyword.QUIT, new CommandQuit(this));
 
-//        this.commands.put(Keyword.LOAD_DATABASE, new CommandLoad());
+        this.commands.put(Keyword.LOAD_DATABASE, new CommandLoadDatabase(graph));
+
+        this.commands.put(Keyword.NODES, new CommandLoadDatabase(graph));
+
 
     }
 
     /**
-     * Listens on stdin for commands. 
+     * Listens on stdin for commands.
      */
     public void listen() {
         this.isRunning = true;
@@ -79,25 +82,32 @@ public class Communication {
     }
 
     private boolean handleCommand(String command, String[] arguments) {
+        // Special case for "load database" command
+        if (command.equals("load") && arguments.length > 0 && arguments[0].equals("database")) {
+            Command executor = commands.get(Keyword.LOAD_DATABASE);
+            String[] newArgs = Arrays.copyOfRange(arguments, 1, arguments.length);
+            if (!executor.matchesNumberOfArguments(newArgs.length)
+                    || !executor.execute(command, newArgs)) {
+                System.out.println("Error: Invalid load database command");
+            }
+            return true;
+        }
+
         for (Map.Entry<Keyword, Command> entry : commands.entrySet()) {
             if (entry.getKey().matches(command)) {
                 Command executor = entry.getValue();
                 if (!executor.matchesNumberOfArguments(arguments.length)
                         || !executor.execute(command, arguments)) {
-                    System.out.println(command);
-                    System.out.println(Arrays.toString(arguments));
-                    System.out.println(MESSAGE_ERROR);
+                    System.out.println("Error: Invalid command");
                 }
                 return true;
             }
         }
+
+        System.out.println("Error: Unknown command '" + command + "'");
         return false;
     }
 
-    /**
-     * Stops this instance from listening.
-     * @see #listen()
-     */
     public void stop() {
         this.isRunning = false;
     }
