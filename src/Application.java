@@ -1,4 +1,4 @@
-import edu.kit.kastel.communication.Communication;
+import edu.kit.kastel.command.Communication;
 
 public class Application {
     public static void main(String[] args) {

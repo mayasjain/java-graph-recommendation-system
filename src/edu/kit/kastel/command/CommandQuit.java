@@ -2,7 +2,7 @@
  * Copyright (c) 2025, KASTEL. All rights reserved.
  */
 
-package edu.kit.kastel.communication;
+package edu.kit.kastel.command;
 
 /**
  * Represents the {@code quit} command to terminate the application as specified.

@@ -2,7 +2,7 @@
  * Copyright (c) 2025, KASTEL. All rights reserved.
  */
 
-package edu.kit.kastel.communication;
+package edu.kit.kastel.command;
 
 import edu.kit.kastel.model.Graph;
 import edu.kit.kastel.model.RelationType;
@@ -35,6 +35,8 @@ public class Communication {
         this.commands.put(Keyword.NODES, new CommandNodes(graph));
 
         this.commands.put(Keyword.EDGES, new CommandEdges(graph));
+
+        this.commands.put(Keyword.REMOVE, new CommandRemove(graph));
 
     }
 

@@ -1,30 +1,30 @@
-package edu.kit.kastel.communication;
-import edu.kit.kastel.model.*;
+package edu.kit.kastel.command;
 
-/**
- * Represents the {@code add} command to add node to graph.
- *
- */
-public class CommandAdd extends Command {
+import edu.kit.kastel.model.Edge;
+import edu.kit.kastel.model.Graph;
+
+public class CommandRemove extends Command {
     private static final int EXPECTED_ARGUMENTS = 3;
     private final Graph graph;
 
-    /**
-     * Creates a new instance.
-     *
-     * @param graph the graph to add to
-     */
-    public CommandAdd(Graph graph) {
+    public CommandRemove(Graph graph) {
         super(EXPECTED_ARGUMENTS);
         this.graph = graph;
     }
 
+    /**
+     * Executes the command and returns whether the execution was successful.
+     *
+     * @param command   the command provided by the user
+     * @param arguments the arguments of the command provided by the user
+     * @return {@code true} if the execution was successful, {@code false} otherwise
+     */
     @Override
     public boolean execute(String command, String[] arguments) {
+
         if (arguments.length != EXPECTED_ARGUMENTS) {
             return false;
         }
-
         String subject = arguments[0].trim();
         String predicate = arguments[1].trim();
         String object = arguments[2].trim();
@@ -32,17 +32,10 @@ public class CommandAdd extends Command {
         ValidateUserInput validator = new ValidateUserInput(graph);
         Edge edge = validator.validateRelationship(subject, predicate, object);
 
-        System.out.println(edge);
-
-
         if (edge == null) {
             return false;
         }
-
-        this.graph.addEdge(edge);
+        this.graph.removeEdge(edge);
         return true;
     }
 }
-
-
-

@@ -1,4 +1,4 @@
-package edu.kit.kastel.communication;
+package edu.kit.kastel.command;
 
 import edu.kit.kastel.model.Edge;
 import edu.kit.kastel.model.Graph;
