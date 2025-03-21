@@ -5,6 +5,10 @@ public class Category extends Node {
         super(name);
     }
 
+    public String getExportString() {
+        return this.getName() + " [shape=box]";
+    }
+
     @Override
     public  boolean isProduct() {
         return false;

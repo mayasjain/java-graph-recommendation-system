@@ -26,10 +26,6 @@ public class CommandLoadDatabase extends Command {
 
     @Override
     public boolean execute(String command, String[] arguments) {
-        if (arguments.length != EXPECTED_ARGUMENTS) {
-            return false;
-        }
-
         String filePath = arguments[0].trim();
 
         try {

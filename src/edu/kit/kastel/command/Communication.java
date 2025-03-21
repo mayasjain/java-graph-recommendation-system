@@ -40,6 +40,8 @@ public class Communication {
 
         this.commands.put(Keyword.EXPORT, new CommandExport(graph));
 
+        this.commands.put(Keyword.RECOMMEND, new CommandRecommend(graph));
+
     }
 
     /**
@@ -55,6 +57,9 @@ public class Communication {
     }
 
     private void handleLine(String line) {
+        if (line.contains("UNION") || line.contains("INTERSECTION")) {
+            // TODO: recursive parsing for recommend
+        }
         String[] split = line.split(COMMAND_SEPARATOR, -1);
         String command = split[0];
         String[] arguments = Arrays.copyOfRange(split, 1, split.length);
@@ -88,13 +93,8 @@ public class Communication {
 
     private boolean handleCommand(String command, String[] arguments) {
         // Special case for "load database" command
-        if (command.equals("load") && arguments.length > 0 && arguments[0].equals("database")) {
-            Command executor = commands.get(Keyword.LOAD_DATABASE);
-            String[] newArgs = Arrays.copyOfRange(arguments, 1, arguments.length);
-            if (!executor.matchesNumberOfArguments(newArgs.length)
-                    || !executor.execute(command, newArgs)) {
-                System.out.println("Error: Invalid load database command");
-            }
+        boolean isLoad = this.handleLoad(command, arguments);
+        if (isLoad) {
             return true;
         }
 
@@ -110,6 +110,19 @@ public class Communication {
         }
 
         System.out.println("Error: Unknown command '" + command + "'");
+        return false;
+    }
+
+    private boolean handleLoad(String command, String[] arguments) {
+        if (command.equals("load") && arguments.length > 0 && arguments[0].equals("database")) {
+            Command executor = commands.get(Keyword.LOAD_DATABASE);
+            String[] newArgs = Arrays.copyOfRange(arguments, 1, arguments.length);
+            if (!executor.matchesNumberOfArguments(newArgs.length)
+                    || !executor.execute(command, newArgs)) {
+                System.out.println("Error: Invalid load database command");
+            }
+            return true;
+        }
         return false;
     }
 

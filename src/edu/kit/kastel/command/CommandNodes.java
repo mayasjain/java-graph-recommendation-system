@@ -6,11 +6,9 @@ import edu.kit.kastel.model.Node;
 import java.util.List;
 
 public class CommandNodes extends Command {
-    private static final int EXPECTED_ARGUMENTS = 0;
     private final Graph graph;
 
     public CommandNodes(Graph graph) {
-        super(EXPECTED_ARGUMENTS);
         this.graph = graph;
     }
 

@@ -21,10 +21,6 @@ public class CommandRemove extends Command {
      */
     @Override
     public boolean execute(String command, String[] arguments) {
-
-        if (arguments.length != EXPECTED_ARGUMENTS) {
-            return false;
-        }
         String subject = arguments[0].trim();
         String predicate = arguments[1].trim();
         String object = arguments[2].trim();

@@ -7,11 +7,9 @@ import java.util.List;
 
 public class CommandEdges extends Command {
 
-    private static final int EXPECTED_ARGUMENTS = 0;
     private final Graph graph;
 
     public CommandEdges(Graph graph) {
-        super(CommandEdges.EXPECTED_ARGUMENTS);
         this.graph = graph;
     }
 

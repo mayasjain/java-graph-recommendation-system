@@ -30,6 +30,13 @@ public class Edge {
         return this.source.equals(source) && this.relation == relation;
     }
 
+    public String getStringForExport() {
+        String source = this.getSource().getName();
+        String target = this.getTarget().getName();
+        String predicate = this.getRelation().toString().replace("-", "");
+        return source + " -> " + target + " [label=" + predicate + "]";
+    }
+
     @Override
     public String toString() {
         return source + " -[" + relation.name().toLowerCase() + "]-> " + target;

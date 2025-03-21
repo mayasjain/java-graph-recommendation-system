@@ -115,6 +115,21 @@ public class Graph {
         return null;
     }
 
+    public Product getProductById(int id) {
+        if (id < 0) {
+            return null;
+        }
+        for (Node node : this.nodes) {
+            if (node.isProduct()) {
+                Product product = (Product) node;
+                if (product.getId() == id) {
+                    return product;
+                }
+            }
+        }
+        return null;
+    }
+
     public List<Node> getNeighbors(Node node, RelationType relation) {
         if (node == null || relation == null) {
             return new ArrayList<>();
@@ -140,13 +155,6 @@ public class Graph {
         }
         categories.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
         return categories;
-    }
-
-    public String getNodeNameWithoutId(Node node) {
-        if (node.isProduct()) {
-            return node.getName();
-        }
-        return node.getName();
     }
 
     private List<Product> getAllProducts() {

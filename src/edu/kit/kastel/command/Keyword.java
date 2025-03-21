@@ -12,7 +12,7 @@ package edu.kit.kastel.command;
 public enum Keyword {
 
     //not sure if this is a good idea
-    LOAD_DATABASE("load"),
+    LOAD_DATABASE("load database"),
 
     ADD("add"),
 
