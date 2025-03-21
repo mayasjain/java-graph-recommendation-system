@@ -57,9 +57,16 @@ public class Communication {
     }
 
     private void handleLine(String line) {
-        if (line.contains("UNION") || line.contains("INTERSECTION")) {
-            // TODO: recursive parsing for recommend
+
+        if (line.startsWith("recommend") && (line.contains("UNION") || line.contains("INTERSECTION"))) {
+            // For complex recommend commands, pass the entire line
+            Command executor = commands.get(Keyword.RECOMMEND);
+            if (!executor.execute("recommend", new String[]{line.substring("recommend".length()).trim()})) {
+                System.out.println("Error: Invalid recommend command");
+            }
+            return;
         }
+
         String[] split = line.split(COMMAND_SEPARATOR, -1);
         String command = split[0];
         String[] arguments = Arrays.copyOfRange(split, 1, split.length);
@@ -116,6 +123,7 @@ public class Communication {
     private boolean handleLoad(String command, String[] arguments) {
         if (command.equals("load") && arguments.length > 0 && arguments[0].equals("database")) {
             Command executor = commands.get(Keyword.LOAD_DATABASE);
+
             String[] newArgs = Arrays.copyOfRange(arguments, 1, arguments.length);
             if (!executor.matchesNumberOfArguments(newArgs.length)
                     || !executor.execute(command, newArgs)) {

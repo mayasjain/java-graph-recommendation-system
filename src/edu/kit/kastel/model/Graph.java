@@ -157,6 +157,11 @@ public class Graph {
         return categories;
     }
 
+    public List<Product> getRecommendation(Strategy strategy, Product product) {
+        Recommendation recommender = new Recommendation(this);
+        return recommender.getRecommendation(strategy, product);
+    }
+
     private List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
         for (Node node : nodes) {

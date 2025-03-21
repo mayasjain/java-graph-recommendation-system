@@ -28,7 +28,6 @@ public class CommandAdd extends Command {
         ValidateUserInput validator = new ValidateUserInput(graph);
         Edge edge = validator.validateRelationship(subject, predicate, object);
 
-        System.out.println(edge);
 
 
         if (edge == null) {
